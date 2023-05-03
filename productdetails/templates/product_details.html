@@ -1,0 +1,26 @@
+{% extends 'base.html'%}
+{% block content %}
+{% for product in products %}
+    Product Name :{{product.name}}
+    <br>
+    Description :{{product.description}}
+    <br>
+    Price :{{product.price}}
+    <br>
+    {% if product.image %}
+        <div>
+            <img class="img-fluid rounded-circle" src="{{ product.image.url  }}" alt=""/>
+        </div>
+    {% endif %}
+    Available Pieces : {{product.available}}
+    <br>
+    Category: {{ product.category }}
+    <br>
+    Status: {{product.status}}
+    <br>
+
+<a href="#">Buy Now </a>
+<br>
+<a href="{% url 'product:add_to_cart' product.id %}">Add To Cart </a>
+{% endfor %}
+{% endblock content %}

@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+{% for product in products %}
+    <a href="{% url 'product:product_detail' product.id %}"> {{product}} </a>
+    <br>
+{% endfor %}
+{% endblock content %}
