@@ -15,7 +15,7 @@
     <br>
      Category :{{ cart.product.category }}
     <br>
-    Total Quantity {{ cart.quantity}}
+     Total Quantity <div id="val">{{ cart.quantity}} </div>
     <button id="inc" onclick="clicked()"> Increase </button>
     <button id="dec" > Decrease </button>
     <br>
@@ -35,6 +35,12 @@
     <script src="{% static 'js/jquery.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'js/bs.min.js' %}" type="text/javascript"></script>
     <script>
+
+        function clicked(){
+            document.getElementById("val")[0].innerHTML = document.getElementById("val")[0].innerHTML+1
+           console.log(x)
+           console.log("hello")
+        }
     </script>
     
 {% endblock script %}
