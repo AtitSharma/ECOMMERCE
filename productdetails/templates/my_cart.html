@@ -3,10 +3,12 @@
 {% load static %}
 {% block content %}
 {% for cart in carts %}
+    <br>
     Product Name :{{cart.product.name}}
     <br>
     Description :{{ cart.product.description}}
     <br>
+    
     Price per Piece :{{ cart.product.price}}
     <br>
     {% if cart.product.image %}
@@ -15,20 +17,24 @@
     <br>
      Category :{{ cart.product.category }}
     <br>
-     Total Quantity <div id="val">{{ cart.quantity}} </div>
-    <button id="inc" onclick="clicked()"> Increase </button>
-    <button id="dec" > Decrease </button>
-    <br>
-     Total price : {{ cart.total_price }}
-    <br>
+
     Your Address To Ship In :{{ cart.address}}
+    
     <br>
-    <a href="#"> Cheak Out </a>
+    Available Pieces {{ cart.product.available}}
+    <br>
+    <form action="{% url 'product:buy_product' cart.id %}" method="POST">
+    {% csrf_token %}
+    <label for="fname">Quantity </label>
+    <input type="number" id="quantity"  value="{{ cart.quantity }}" name="quantity"><br><br>
+    <input type="submit" value="Ship In" class="btn btn-primary" />
+    </form>
+    <br>
     <br>
     **********************************************************
-    <br>
     
 {% endfor %}
+
 {% endblock content %}
 
 {% block script %}
@@ -36,11 +42,6 @@
     <script src="{% static 'js/bs.min.js' %}" type="text/javascript"></script>
     <script>
 
-        function clicked(){
-            document.getElementById("val")[0].innerHTML = document.getElementById("val")[0].innerHTML+1
-           console.log(x)
-           console.log("hello")
-        }
     </script>
     
 {% endblock script %}

@@ -1,0 +1,24 @@
+Sucessfully bought the product 
+<br>
+Here is your bill
+{% for cart in carts %}
+    <br>
+    {{ cart.username }}
+    <br>
+    {{ cart.product }}
+    <br>
+    {{ cart.quantity }}
+    <br>
+    {{ cart.total_price }}
+    <br>
+    {{ cart.address }}
+    <br>
+    {{ request.user.address }}
+    <br>
+    <a href="{% url 'product:place_order' cart.id quantity %}" > Place a order </a>
+    <br>
+    <a href="#" > Khalti </a>
+    <br>
+    <a href="#" > Esewa </a>
+    <br>
+{% endfor %}
