@@ -7,9 +7,6 @@ from django.contrib import messages
 
 
 
-# Create your views here.
-
-
 
 def home(request):
     categories=Category.objects.all()
@@ -60,12 +57,13 @@ def add_to_cart(request,pk,quantity=1):
 
 @login_required
 def my_cart(request,username):
-    carts=Cart.objects.filter(username=username)
+    carts=Cart.objects.filter(username=username,product__available__gt=0)
     context={
         "carts":carts,
     }
     return render (request,"my_cart.html",context)
 
+@login_required
 def buy_product(request,pk):
     quantity=request.POST.get("quantity")
     quantity=int(quantity)
@@ -91,7 +89,7 @@ def buy_product(request,pk):
     return render (request,"buy_product.html",{"carts":carts,"quantity":quantity})
 
 
-
+@login_required
 def place_a_order(request,pk,quantity):
     available_quantity=Cart.objects.get(pk=pk).product.available
     remaining_quantity=int(available_quantity)-int(quantity)
