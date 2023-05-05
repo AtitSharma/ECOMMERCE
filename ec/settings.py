@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -136,3 +137,22 @@ LOGIN_REDIRECT_URL="product:home"
 MEDIA_URL ="media/"
 
 MEDIA_ROOT = BASE_DIR/"mediafiles"
+
+
+
+EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+EMAIL_USE_TLS=True
+EMAIL_HOST="smtp.gmail.com"
+EMAIL_PORT=587
+EMAIL_HOST_USER=config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD=config("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL= "Celery <>"
+
+
+CELERY_BROKEN_URL='redis://127:0.0.1:6379'
+CELERY_ACCEPT_CONTENT=["application/json"]
+CELERY_RESULT_SERIALIZER ='json'
+CELERY_TASK_SERIALIZER= 'json'
+CELERY_TIMEZONE='Asia/Kolkata'
+CELERY_RESULT_BACKEND="django-db"
+CELERY_BEAT_SCHEDULER='django_celery_beat.schedulers:DatabaseScheduler'

@@ -1,11 +1,16 @@
 from django.shortcuts import render,redirect,reverse
 from productdetails.models import Category,Product,Cart
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 from django.contrib import messages
-
-
-
+from productdetails.forms import ProductAdditionForm
+from django.contrib.auth.decorators import user_passes_test
+from django.core.mail import send_mail
+from django.contrib.auth import get_user_model
+from ec import settings
+from celery import shared_task
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
 
 
 def home(request):
@@ -100,6 +105,52 @@ def place_a_order(request,pk,quantity):
     Cart.objects.filter(pk=pk).delete()
     return redirect("product:home")
 
+
+@user_passes_test(lambda u : u.is_superuser)
+def admin_pannel(request):
+    return render(request,"admin_pannel.html")
+
+
+@user_passes_test(lambda u : u.is_superuser)
+def add_item(request):
+    if request.method=="POST":
+        form=ProductAdditionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            product_name=request.POST.get("name")
+            mail_subject="New product available !!!!"
+            message="Please check it out "
+            send_mails_to_all(request,mail_subject,message)
+            return redirect("product:admin_pannel")
+    else:
+        form=ProductAdditionForm()
+    return render(request,"add_product.html",{"form":form})
+
+
+
+
+
+@shared_task
+def send_mails_to_all(request,mail_subject,message):   
+    users=get_user_model().objects.all()
+    mes=message
+    for user in users:
+        to_email=user.email
+        message = render_to_string("show_in_all.html", {
+        'title':mes,
+        'domain': get_current_site(request).domain,
+        "protocol": 'https' if request.is_secure() else 'http'
+        })
+        send_mail(
+            subject=mail_subject,
+            message=message,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[to_email],
+            fail_silently=True,
+        )
+    return HttpResponse("SENT")
+
+            
 
 
  
