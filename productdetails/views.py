@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,reverse
 from productdetails.models import Category,Product,Cart
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect,HttpResponse
+from django.http import HttpResponseRedirect,HttpResponse,JsonResponse
 from django.contrib import messages
 from productdetails.forms import ProductAdditionForm
 from django.contrib.auth.decorators import user_passes_test
@@ -114,7 +114,7 @@ def admin_pannel(request):
 @user_passes_test(lambda u : u.is_superuser)
 def add_item(request):
     if request.method=="POST":
-        form=ProductAdditionForm(request.POST)
+        form=ProductAdditionForm(request.POST,request.FILES)
         if form.is_valid():
             form.save()
             product_name=request.POST.get("name")
@@ -125,6 +125,10 @@ def add_item(request):
     else:
         form=ProductAdditionForm()
     return render(request,"add_product.html",{"form":form})
+
+
+
+
 
 
 
@@ -149,6 +153,22 @@ def send_mails_to_all(request,mail_subject,message):
             fail_silently=True,
         )
     return HttpResponse("SENT")
+
+
+# def demo(request):
+#     data=list(Product.objects.all().values())
+#     print(data)
+#     return JsonResponse(data,safe=False)
+
+
+
+
+def remove_from_cart(request,username,id):
+    c=Cart.objects.filter(username=username,product__id=id)
+    c.delete()
+    return redirect("product:my_cart",username=username)
+    
+    
 
             
 

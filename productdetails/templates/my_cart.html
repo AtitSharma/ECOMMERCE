@@ -31,11 +31,14 @@
     </form>
     <br>
     <br>
-    **********************************************************
-    
+    <a href="{% url 'product:cart-remove' request.user.username cart.product.id %}" > Remove from Cart </a><br>
+    **********************************************************<br>
+   
 {% endfor %}
 
+
 {% endblock content %}
+
 
 {% block script %}
     <script src="{% static 'js/jquery.min.js' %}" type="text/javascript"></script>
